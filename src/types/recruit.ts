@@ -12,7 +12,7 @@ export type RecruitMapData = Map<string, RecruitData>;
 
 export type CalendarItemData = Pick<
   RecruitData,
-  "id" | "company_name" | "duty_ids"
+  "id" | "company_name" | "duty_ids" | "title"
 > & {
   type: "start" | "end";
 };

@@ -1,15 +1,20 @@
 import { format } from "date-fns";
-import { CalendarMapData, RecruitData } from "../types/recruit.ts";
+import {
+  CalendarItemData,
+  CalendarMapData,
+  RecruitData,
+} from "../types/recruit.ts";
 
 export function getCalendarData(recruitData: RecruitData[]): CalendarMapData {
   const map = new Map();
   recruitData.forEach(
-    ({ start_time, end_time, id, company_name, duty_ids }) => {
+    ({ start_time, end_time, id, company_name, title, duty_ids }) => {
       const startDate = getDateFromStringTime(new Date(start_time));
       const endDate = getDateFromStringTime(new Date(end_time));
       const baseItem = {
         id,
         company_name,
+        title,
         duty_ids,
       };
 
@@ -23,6 +28,9 @@ export function getCalendarData(recruitData: RecruitData[]): CalendarMapData {
       map.set(endDate, [...existingEndDateItem, { type: "end", ...baseItem }]);
     }
   );
+
+  // todo: sort
+
   return map;
 }
 
@@ -31,4 +39,15 @@ export function getCalendarData(recruitData: RecruitData[]): CalendarMapData {
  * */
 export function getDateFromStringTime(date: Date) {
   return format(date, "yyyy-MM-dd");
+}
+
+export function getViewDayData(
+  list: CalendarItemData[]
+): Map<string, CalendarItemData[]> {
+  return list.reduce((map, item) => {
+    const keyName = item.company_name + "_" + item.type;
+    const existing = map.get(keyName) ?? [];
+    map.set(keyName, [...existing, item]);
+    return map;
+  }, new Map());
 }
