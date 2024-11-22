@@ -1,6 +1,6 @@
-import { Duty, Recruit } from "../types/recruit.ts";
+import { DutyData, RecruitData } from "../types/recruit.ts";
 
-export async function getRecruits(): Promise<Recruit[]> {
+export async function getRecruits(): Promise<RecruitData[]> {
   try {
     const res = await fetch(
       "https://d1kh1cvi0j04lg.cloudfront.net/api/v1/recruits.json"
@@ -12,7 +12,7 @@ export async function getRecruits(): Promise<Recruit[]> {
   }
 }
 
-export async function getFilters(): Promise<Duty[]> {
+export async function getFilters(): Promise<DutyData[]> {
   try {
     const res = await fetch(
       "https://d1kh1cvi0j04lg.cloudfront.net/api/v1/duties.json"

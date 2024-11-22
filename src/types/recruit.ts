@@ -1,4 +1,4 @@
-export type Recruit = {
+export type RecruitData = {
   id: number;
   company_name: string;
   title: string;
@@ -8,7 +8,7 @@ export type Recruit = {
   duty_ids: number[]; // [58, 112, 115];
 };
 
-export type Duty = {
+export type DutyData = {
   id: number;
   name: string;
   parent_id: null | number;
