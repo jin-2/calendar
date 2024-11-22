@@ -8,6 +8,13 @@ export type RecruitData = {
   duty_ids: number[]; // [58, 112, 115];
 };
 
+export type CalendarItemData = Pick<
+  RecruitData,
+  "id" | "company_name" | "duty_ids"
+> & {
+  type: "start" | "end";
+};
+
 export type DutyData = {
   id: number;
   name: string;

@@ -6,6 +6,7 @@ import Calendar from "../../components/Calendar/Calendar.tsx";
 import { useMemo } from "react";
 import { getArrayToMap } from "../../utils/getArrayToMap.ts";
 import type { RecruitData } from "../../types/recruit.ts";
+import { getCalendarData } from "../../utils/calendar.ts";
 
 interface RecruitProps {}
 
@@ -25,6 +26,12 @@ const Recruit = ({}: RecruitProps) => {
   }, [recruitData.data]);
 
   console.log(recruitDataToMap);
+
+  const recruitDataByCalendar = useMemo(() => {
+    return getCalendarData(recruitData.data ?? []);
+  }, [recruitData.data]);
+
+  console.log(recruitDataByCalendar);
 
   return (
     <StyledRecruit>
