@@ -2,6 +2,7 @@
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { getFilters, getRecruits } from "../../api/calendar.ts";
+import Calendar from "../../components/Calendar/Calendar.tsx";
 
 interface RecruitProps {}
 
@@ -16,7 +17,11 @@ const Recruit = ({}: RecruitProps) => {
     queryFn: getFilters,
   });
 
-  return <StyledRecruit>calendar</StyledRecruit>;
+  return (
+    <StyledRecruit>
+      <Calendar />
+    </StyledRecruit>
+  );
 };
 
 export default Recruit;
