@@ -8,12 +8,16 @@ export type RecruitData = {
   duty_ids: number[]; // [58, 112, 115];
 };
 
+export type RecruitMapData = Map<string, RecruitData>;
+
 export type CalendarItemData = Pick<
   RecruitData,
   "id" | "company_name" | "duty_ids"
 > & {
   type: "start" | "end";
 };
+
+export type CalendarMapData = Map<string, CalendarItemData[]>;
 
 export type DutyData = {
   id: number;

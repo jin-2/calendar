@@ -1,9 +1,7 @@
 import { format } from "date-fns";
-import { CalendarItemData, RecruitData } from "../types/recruit.ts";
+import { CalendarMapData, RecruitData } from "../types/recruit.ts";
 
-export function getCalendarData(
-  recruitData: RecruitData[]
-): Map<string, CalendarItemData[]> {
+export function getCalendarData(recruitData: RecruitData[]): CalendarMapData {
   const map = new Map();
   recruitData.forEach(
     ({ start_time, end_time, id, company_name, duty_ids }) => {
