@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { CalendarItemData } from "../../types/recruit.ts";
 import { getViewDayData } from "../../utils/calendar.ts";
@@ -14,6 +14,14 @@ const Day = ({ day, data }: DayProps) => {
     const map = getViewDayData(data);
     return Array.from(map.values());
   }, [data]);
+  const [isShowGroup, setIsShowGroup] = useState(false);
+
+  const handleClickCompany = (hasChild: boolean) => {
+    if (hasChild) {
+      setIsShowGroup((prev) => !prev);
+    }
+    console.log("goto 상세");
+  };
 
   return (
     <StyledDay>
@@ -22,16 +30,30 @@ const Day = ({ day, data }: DayProps) => {
         viewData.map((group) => {
           const [first, second] = group;
           return (
-            <li key={first.company_name + "_" + first.type}>
-              <p>
-                <strong>{first.type}) </strong>
+            <li
+              key={first.company_name + "_" + first.type}
+              className="company-group"
+            >
+              <button
+                type="button"
+                onClick={() => handleClickCompany(!!second)}
+              >
+                <strong>[{first.type === "start" ? "시" : "끝"}]</strong>
                 {first.company_name}
-              </p>
+              </button>
               {second ? (
-                <ul>
+                <ul
+                  className={`company-group-postings ${isShowGroup ? "show" : ""}`}
+                >
                   {group.map((item) => (
                     <li key={item.id}>
-                      <strong>{item.type}</strong>) {item.title}
+                      <button
+                        type="button"
+                        onClick={() => handleClickCompany(false)}
+                      >
+                        <strong>{item.type === "start" ? "시" : "끝"}</strong>)
+                        {item.title}
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -45,4 +67,21 @@ const Day = ({ day, data }: DayProps) => {
 
 export default Day;
 
-const StyledDay = styled.div``;
+const StyledDay = styled.div`
+  .company-group {
+    position: relative;
+  }
+
+  .company-group-postings {
+    z-index: 1;
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    background: antiquewhite;
+
+    &.show {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+`;
