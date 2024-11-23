@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { CalendarItemData } from "../../types/recruit.ts";
 import { getViewDayData } from "../../utils/calendar.ts";
+import { useReadListStore } from "../../stores/useReadListStore.ts";
 
 interface DayProps {
   day: string; // yyyy-MM-dd
@@ -15,11 +16,14 @@ const Day = ({ day, data }: DayProps) => {
     return Array.from(map.values());
   }, [data]);
   const [isShowGroup, setIsShowGroup] = useState(false);
+  const readList = useReadListStore((state) => state.readList);
+  const addReadList = useReadListStore((state) => state.addReadList);
 
-  const handleClickCompany = (hasChild: boolean) => {
+  const handleClickCompany = (hasChild: boolean, id: number) => {
     if (hasChild) {
       setIsShowGroup((prev) => !prev);
     }
+    addReadList(id);
     console.log("goto 상세");
   };
 
@@ -36,7 +40,10 @@ const Day = ({ day, data }: DayProps) => {
             >
               <button
                 type="button"
-                onClick={() => handleClickCompany(!!second)}
+                onClick={() => handleClickCompany(!!second, first.id)}
+                className={
+                  !second && readList.includes(first.id) ? "visited" : ""
+                }
               >
                 <strong>[{first.type === "start" ? "시" : "끝"}]</strong>
                 {first.company_name}
@@ -49,7 +56,8 @@ const Day = ({ day, data }: DayProps) => {
                     <li key={item.id}>
                       <button
                         type="button"
-                        onClick={() => handleClickCompany(false)}
+                        onClick={() => handleClickCompany(false, item.id)}
+                        className={readList.includes(item.id) ? "visited" : ""}
                       >
                         <strong>{item.type === "start" ? "시" : "끝"}</strong>)
                         {item.title}
@@ -83,5 +91,9 @@ const StyledDay = styled.div`
       opacity: 1;
       visibility: visible;
     }
+  }
+
+  .visited {
+    color: purple;
   }
 `;
