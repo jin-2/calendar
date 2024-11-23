@@ -9,9 +9,11 @@ import { getArrayToMap } from "../../utils/getArrayToMap.ts";
 import { getCalendarData } from "../../utils/calendar.ts";
 import Day from "../Day/Day.tsx";
 
-interface CalendarProps {}
+interface CalendarProps {
+  filters: number[];
+}
 
-const Calendar = ({}: CalendarProps) => {
+const Calendar = ({ filters }: CalendarProps) => {
   const { data } = useQuery({
     queryKey: ["RECRUITS"],
     queryFn: getRecruits,
@@ -27,10 +29,21 @@ const Calendar = ({}: CalendarProps) => {
     return getCalendarData(data ?? []);
   }, [data]);
 
+  const filteredDutiesRecruitData = (day: string) => {
+    const list = recruitDataByCalendar.get(day) ?? [];
+    if (!list) return [];
+
+    if (filters.length === 0) return list;
+
+    return list.filter((item) => {
+      return item.duty_ids.some((dutyId) => filters.includes(dutyId));
+    });
+  };
+
   return (
     <StyledCalendar>
       {days.map((day) => (
-        <Day key={day} day={day} data={recruitDataByCalendar.get(day) ?? []} />
+        <Day key={day} day={day} data={filteredDutiesRecruitData(day) ?? []} />
       ))}
     </StyledCalendar>
   );

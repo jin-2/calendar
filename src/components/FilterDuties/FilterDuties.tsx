@@ -5,15 +5,18 @@ import { useQuery } from "@tanstack/react-query";
 import { getFilters } from "../../api/calendar.ts";
 import {
   getHierarchyDuties,
+  getSelectedDutyIds,
   updateSelectionToParent,
   updateSelectionToTargetAndChild,
 } from "../../utils/filter.ts";
 import DutyItem from "../DutyItem/DutyItem.tsx";
 import type { DutyData, ExpandedNodeId } from "../../types/recruit.ts";
 
-interface FilterDutiesProps {}
+interface FilterDutiesProps {
+  setFilters: (filters: number[]) => void;
+}
 
-const FilterDuties = ({}: FilterDutiesProps) => {
+const FilterDuties = ({ setFilters }: FilterDutiesProps) => {
   const { data } = useQuery({
     queryKey: ["DUTIES"],
     queryFn: getFilters,
@@ -29,6 +32,10 @@ const FilterDuties = ({}: FilterDutiesProps) => {
       setMapData(dutyMap);
     }
   }, [data]);
+
+  useEffect(() => {
+    setFilters(getSelectedDutyIds(mapData));
+  }, [mapData]);
 
   const [expandedNodeId, setExpandedNodeId] = useState<ExpandedNodeId>([
     null,

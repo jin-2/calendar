@@ -61,3 +61,15 @@ export function updateSelectionToParent(
     }
   }
 }
+
+export function getSelectedDutyIds(nodeMap: DutyMapData) {
+  const selectedDutyIds = [];
+
+  for (const [id, node] of nodeMap.entries()) {
+    if (node.isSelected) {
+      selectedDutyIds.push(id);
+    }
+  }
+
+  return selectedDutyIds;
+}
