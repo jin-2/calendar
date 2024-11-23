@@ -24,3 +24,8 @@ export type DutyData = {
   name: string;
   parent_id: null | number;
 };
+
+export type HierarchyDutyData = DutyData & {
+  children: DutyData["id"][];
+  isSelected: boolean;
+};
