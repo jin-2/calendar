@@ -29,9 +29,25 @@ export function getCalendarData(recruitData: RecruitData[]): CalendarMapData {
     }
   );
 
-  // todo: sort
+  return sortedCalendarData(map);
+}
 
-  return map;
+function sortedCalendarData(map: CalendarMapData): CalendarMapData {
+  const copyMap = new Map(map);
+  const sortedEntries: [string, CalendarItemData[]][] = Array.from(copyMap).map(
+    ([date, items]) => [
+      date,
+      items.sort((a, b) => {
+        if (a.type !== b.type) {
+          return a.type === "start" ? -1 : 1;
+        }
+
+        return a.company_name.localeCompare(b.company_name, "en");
+      }),
+    ]
+  );
+
+  return new Map(sortedEntries);
 }
 
 /*

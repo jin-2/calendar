@@ -23,11 +23,16 @@ const Day = ({ day, data }: DayProps) => {
           const [first, second] = group;
           return (
             <li key={first.company_name + "_" + first.type}>
-              <p>{first.company_name}</p>
+              <p>
+                <strong>{first.type}) </strong>
+                {first.company_name}
+              </p>
               {second ? (
                 <ul>
                   {group.map((item) => (
-                    <li key={item.id}>{item.title}</li>
+                    <li key={item.id}>
+                      <strong>{item.type}</strong>) {item.title}
+                    </li>
                   ))}
                 </ul>
               ) : null}
