@@ -1,7 +1,7 @@
-import { DutyData, HierarchyDutyData } from "../types/recruit.ts";
+import { DutyData, DutyMapData, HierarchyDutyData } from "../types/recruit.ts";
 
 export function getHierarchyDuties(data: DutyData[]): {
-  dutyMap: Map<DutyData["id"], HierarchyDutyData>;
+  dutyMap: DutyMapData;
   rootDutyIds: DutyData["id"][];
 } {
   const dutyMap = new Map();
@@ -23,4 +23,41 @@ export function getHierarchyDuties(data: DutyData[]): {
   });
 
   return { dutyMap, rootDutyIds };
+}
+
+export function updateSelectionToTargetAndChild(
+  nodeMap: DutyMapData,
+  node: HierarchyDutyData,
+  isSelected: boolean
+) {
+  node.isSelected = isSelected;
+  node.children.forEach((childId) => {
+    const prev = nodeMap.get(childId);
+    if (prev) {
+      nodeMap.set(childId, { ...prev, isSelected });
+      updateSelectionToTargetAndChild(nodeMap, prev, isSelected);
+    }
+  });
+}
+
+export function updateSelectionToParent(
+  nodeMap: DutyMapData,
+  node: HierarchyDutyData
+) {
+  if (node.parent_id !== null) {
+    const parentNode = nodeMap.get(node.parent_id);
+    if (parentNode) {
+      const allChildrenSelected = parentNode.children.every((childId) => {
+        const child = nodeMap.get(childId);
+        return child?.isSelected;
+      });
+
+      nodeMap.set(node.parent_id, {
+        ...parentNode,
+        isSelected: allChildrenSelected,
+      });
+
+      updateSelectionToParent(nodeMap, parentNode);
+    }
+  }
 }

@@ -1,11 +1,15 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { getFilters } from "../../api/calendar.ts";
-import { getHierarchyDuties } from "../../utils/filter.ts";
+import {
+  getHierarchyDuties,
+  updateSelectionToParent,
+  updateSelectionToTargetAndChild,
+} from "../../utils/filter.ts";
 import DutyItem from "../DutyItem/DutyItem.tsx";
-import { DutyData, ExpandedNodeId } from "../../types/recruit.ts";
+import type { DutyData, ExpandedNodeId } from "../../types/recruit.ts";
 
 interface FilterDutiesProps {}
 
@@ -15,7 +19,16 @@ const FilterDuties = ({}: FilterDutiesProps) => {
     queryFn: getFilters,
   });
 
-  const { dutyMap, rootDutyIds } = getHierarchyDuties(data ?? []);
+  const { rootDutyIds } = getHierarchyDuties(data ?? []);
+
+  const [mapData, setMapData] = useState(new Map());
+
+  useEffect(() => {
+    if (data) {
+      const { dutyMap } = getHierarchyDuties(data);
+      setMapData(dutyMap);
+    }
+  }, [data]);
 
   const [expandedNodeId, setExpandedNodeId] = useState<ExpandedNodeId>([
     null,
@@ -23,12 +36,12 @@ const FilterDuties = ({}: FilterDutiesProps) => {
   ]);
 
   const getDataById = useCallback(
-    (id: DutyData["id"]) => dutyMap.get(id),
-    [dutyMap]
+    (id: DutyData["id"]) => mapData.get(id),
+    [mapData]
   );
 
   const handleExpand = (id: number) => {
-    const data = dutyMap.get(id);
+    const data = mapData.get(id);
     if (!data) return;
 
     if (data.children.length === 0) return;
@@ -41,6 +54,19 @@ const FilterDuties = ({}: FilterDutiesProps) => {
     setExpandedNodeId([data.id, null]);
   };
 
+  const handleChangeDutyCheckbox = (id: number, isSelected: boolean) => {
+    const data = mapData.get(id);
+    if (!data) return;
+
+    setMapData((prev) => {
+      const newMap = new Map(prev);
+      updateSelectionToTargetAndChild(newMap, data, isSelected);
+      updateSelectionToParent(newMap, data);
+
+      return newMap;
+    });
+  };
+
   return (
     <StyledFilterDuties>
       <ul className="root-filter-group">
@@ -51,6 +77,7 @@ const FilterDuties = ({}: FilterDutiesProps) => {
             expandedNodeId={expandedNodeId}
             getDataById={getDataById}
             onExpand={handleExpand}
+            onChangeCheckbox={handleChangeDutyCheckbox}
           />
         ))}
       </ul>

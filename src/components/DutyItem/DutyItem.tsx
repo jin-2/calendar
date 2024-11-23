@@ -7,10 +7,11 @@ interface DutyItemProps {
   expandedNodeId: ExpandedNodeId;
   getDataById: (id: number) => HierarchyDutyData | undefined;
   onExpand: (id: number) => void;
+  onChangeCheckbox: (id: number, isSelected: boolean) => void;
 }
 
 const DutyItem = ({ id, ...restProps }: DutyItemProps) => {
-  const { expandedNodeId, getDataById, onExpand } = restProps;
+  const { expandedNodeId, getDataById, onExpand, onChangeCheckbox } = restProps;
 
   const data = getDataById(id);
   if (!data) {
@@ -23,12 +24,23 @@ const DutyItem = ({ id, ...restProps }: DutyItemProps) => {
     onExpand(id);
   };
 
+  const handleChange = () => {
+    onChangeCheckbox(data.id, !data.isSelected);
+  };
+
   return (
     <StyledDutyItem>
-      <label onChange={handleClick}>
-        <input type="checkbox" value={id} />
+      <p onClick={handleClick}>
+        <label>
+          <input
+            type="checkbox"
+            value={id}
+            checked={data.isSelected}
+            onChange={handleChange}
+          />
+        </label>
         {data.name}
-      </label>
+      </p>
       {data.children.length ? (
         <ul className={`filter-group ${isExpanded ? "show" : ""}`}>
           {data.children.map((childId) => (

@@ -19,6 +19,8 @@ export type CalendarItemData = Pick<
 
 export type CalendarMapData = Map<string, CalendarItemData[]>;
 
+export type DutyMapData = Map<DutyData["id"], HierarchyDutyData>;
+
 export type DutyData = {
   id: number;
   name: string;
