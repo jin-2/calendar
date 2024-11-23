@@ -29,3 +29,5 @@ export type HierarchyDutyData = DutyData & {
   children: DutyData["id"][];
   isSelected: boolean;
 };
+
+export type ExpandedNodeId = [number | null, number | null];
