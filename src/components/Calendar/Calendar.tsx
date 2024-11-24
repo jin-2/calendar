@@ -154,7 +154,7 @@ const StyledMonth = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: auto;
-  min-height: 100vh;
+  min-height: calc(100vh - 80px - 50px - 24px);
 `;
 
 const StyledCalendar = styled.div`
