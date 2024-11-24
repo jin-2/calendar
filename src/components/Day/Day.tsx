@@ -2,8 +2,9 @@
 import { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { CalendarItemData } from "../../types/recruit.ts";
-import { getViewDayData } from "../../utils/calendar.ts";
+import { formatDate, getViewDayData } from "../../utils/calendar.ts";
 import { useReadListStore } from "../../stores/useReadListStore.ts";
+import CompanyNameButton from "../CompanyNameButton/CompanyNameButton.tsx";
 
 interface DayProps {
   day: string; // yyyy-MM-dd
@@ -31,7 +32,9 @@ const Day = ({ day, data, showDetail }: DayProps) => {
 
   return (
     <StyledDay>
-      <time dateTime={day}>{day}</time>
+      <div className="day-head">
+        <time dateTime={day}>{formatDate(new Date(day), "d")}</time>
+      </div>
       <ul>
         {viewData &&
           viewData.map((group) => {
@@ -41,16 +44,15 @@ const Day = ({ day, data, showDetail }: DayProps) => {
                 key={first.company_name + "_" + first.type}
                 className="company-group"
               >
-                <button
-                  type="button"
+                <CompanyNameButton
+                  recruitmentPeriodType={first.type}
                   onClick={() => handleClickCompany(!!second, first.id)}
                   className={
                     !second && readList.includes(first.id) ? "visited" : ""
                   }
                 >
-                  <strong>[{first.type === "start" ? "시" : "끝"}]</strong>
                   {first.company_name}
-                </button>
+                </CompanyNameButton>
                 {second ? (
                   <ul
                     className={`company-group-postings ${isShowGroup ? "show" : ""}`}
@@ -82,6 +84,12 @@ const Day = ({ day, data, showDetail }: DayProps) => {
 export default Day;
 
 const StyledDay = styled.div`
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+  border-right: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+
   .company-group {
     position: relative;
   }
@@ -99,7 +107,9 @@ const StyledDay = styled.div`
     }
   }
 
-  .visited {
-    color: purple;
+  .day-head {
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
   }
 `;

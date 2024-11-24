@@ -80,19 +80,23 @@ const Calendar = ({ filters }: CalendarProps) => {
         </button>
       </div>
       <StyledCalendar>
-        {WEEKDAYS.map((dayName) => (
-          <div className="calendar-head" key={dayName}>
-            {dayName}
-          </div>
-        ))}
-        {days.map((day) => (
-          <Day
-            key={day}
-            day={day}
-            data={filteredDutiesRecruitData(day) ?? []}
-            showDetail={showDetail}
-          />
-        ))}
+        <StyledWeekdays>
+          {WEEKDAYS.map((dayName) => (
+            <div className="calendar-head" key={dayName}>
+              {dayName}
+            </div>
+          ))}
+        </StyledWeekdays>
+        <StyledMonth>
+          {days.map((day) => (
+            <Day
+              key={day}
+              day={day}
+              data={filteredDutiesRecruitData(day) ?? []}
+              showDetail={showDetail}
+            />
+          ))}
+        </StyledMonth>
       </StyledCalendar>
       <Modal isOpen={currentDetailId !== null} onClose={closeModal}>
         <JobDetail
@@ -107,7 +111,7 @@ const Calendar = ({ filters }: CalendarProps) => {
 
 export default Calendar;
 
-const StyledCalendar = styled.div`
+const StyledWeekdays = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 
@@ -117,5 +121,17 @@ const StyledCalendar = styled.div`
     color: #555;
     text-align: center;
     font-size: 14px;
+    line-height: 20px;
   }
+`;
+
+const StyledMonth = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: auto;
+  min-height: 100vh;
+`;
+
+const StyledCalendar = styled.div`
+  border-left: 1px solid #f0f0f0;
 `;
