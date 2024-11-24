@@ -15,6 +15,8 @@ interface CalendarProps {
   filters: number[];
 }
 
+const WEEKDAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
 const Calendar = ({ filters }: CalendarProps) => {
   const { data } = useQuery({
     queryKey: ["RECRUITS"],
@@ -78,6 +80,11 @@ const Calendar = ({ filters }: CalendarProps) => {
         </button>
       </div>
       <StyledCalendar>
+        {WEEKDAYS.map((dayName) => (
+          <div className="calendar-head" key={dayName}>
+            {dayName}
+          </div>
+        ))}
         {days.map((day) => (
           <Day
             key={day}
@@ -103,5 +110,12 @@ export default Calendar;
 const StyledCalendar = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+
+  .calendar-head {
+    padding: 2px;
+    background: #eee;
+    color: #555;
+    text-align: center;
+    font-size: 14px;
+  }
 `;
