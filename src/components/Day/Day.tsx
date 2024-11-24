@@ -58,18 +58,17 @@ const Day = ({ day, data, showDetail }: DayProps) => {
                     className={`company-group-postings ${isShowGroup ? "show" : ""}`}
                   >
                     {group.map((item) => (
-                      <li key={item.id}>
-                        <button
-                          type="button"
+                      <StyledCompanyPosting key={item.id}>
+                        <p
+                          role="button"
                           onClick={() => handleClickCompany(false, item.id)}
                           className={
                             readList.includes(item.id) ? "visited" : ""
                           }
                         >
-                          <strong>{item.type === "start" ? "시" : "끝"}</strong>
-                          ){item.title}
-                        </button>
-                      </li>
+                          {item.title}
+                        </p>
+                      </StyledCompanyPosting>
                     ))}
                   </ul>
                 ) : null}
@@ -82,6 +81,19 @@ const Day = ({ day, data, showDetail }: DayProps) => {
 };
 
 export default Day;
+
+const StyledCompanyPosting = styled.li`
+  padding: 8px;
+  cursor: pointer;
+
+  & + & {
+    border-top: 1px solid #eee;
+  }
+
+  .visited {
+    color: #999;
+  }
+`;
 
 const StyledDay = styled.div`
   overflow: hidden;
@@ -99,7 +111,9 @@ const StyledDay = styled.div`
     position: absolute;
     opacity: 0;
     visibility: hidden;
-    background: antiquewhite;
+    background-color: #fff;
+    border: 1px solid #eee;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
 
     &.show {
       opacity: 1;
