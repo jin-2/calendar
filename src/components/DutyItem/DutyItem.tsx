@@ -46,8 +46,7 @@ const DutyItem = ({ id, ...restProps }: DutyItemProps) => {
             onChange={handleChange}
           />
         </label>
-        {data.name}
-        {calcSelectedCount([id]) || ""}
+        {data.name} {calcSelectedCount([id]) || ""}
         <span className="arrow">{data.children.length ? "▶" : null}</span>
       </p>
       {data.children.length ? (
