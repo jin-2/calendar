@@ -1,10 +1,11 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { CalendarItemData } from "../../types/recruit.ts";
 import { formatDate, getViewDayData } from "../../utils/calendar.ts";
 import { useReadListStore } from "../../stores/useReadListStore.ts";
 import CompanyNameButton from "../CompanyNameButton/CompanyNameButton.tsx";
+import Tooltip from "../Tooltip/Tooltip.tsx";
 
 interface DayProps {
   day: string; // yyyy-MM-dd
@@ -20,6 +21,7 @@ const Day = ({ day, data, showDetail }: DayProps) => {
   const [showParentId, setShowParentId] = useState<null | number>(null);
   const readList = useReadListStore((state) => state.readList);
   const addReadList = useReadListStore((state) => state.addReadList);
+  const tooltipRefs = useRef<Map<number, HTMLParagraphElement>>(new Map());
 
   const handleClickCompany = (hasChild: boolean, id: number) => {
     if (hasChild) {
@@ -45,6 +47,9 @@ const Day = ({ day, data, showDetail }: DayProps) => {
                 className="company-group"
               >
                 <CompanyNameButton
+                  ref={(el) => {
+                    if (el) tooltipRefs.current.set(first.id, el);
+                  }}
                   recruitmentPeriodType={first.type}
                   onClick={() => handleClickCompany(!!second, first.id)}
                   className={
@@ -53,24 +58,29 @@ const Day = ({ day, data, showDetail }: DayProps) => {
                 >
                   {first.company_name}
                 </CompanyNameButton>
-                {second ? (
-                  <ul
-                    className={`company-group-postings ${showParentId === first.id ? "show" : ""}`}
+                {second && showParentId === first.id ? (
+                  <Tooltip
+                    targetRef={{
+                      current: tooltipRefs.current.get(first.id) || null,
+                    }}
+                    onClose={() => setShowParentId(null)}
                   >
-                    {group.map((item) => (
-                      <StyledCompanyPosting key={item.id}>
-                        <p
-                          role="button"
-                          onClick={() => handleClickCompany(false, item.id)}
-                          className={
-                            readList.includes(item.id) ? "visited" : ""
-                          }
-                        >
-                          {item.title}
-                        </p>
-                      </StyledCompanyPosting>
-                    ))}
-                  </ul>
+                    <ul className="company-group-postings">
+                      {group.map((item) => (
+                        <StyledCompanyPosting key={item.id}>
+                          <p
+                            role="button"
+                            onClick={() => handleClickCompany(false, item.id)}
+                            className={
+                              readList.includes(item.id) ? "visited" : ""
+                            }
+                          >
+                            {item.title}
+                          </p>
+                        </StyledCompanyPosting>
+                      ))}
+                    </ul>
+                  </Tooltip>
                 ) : null}
               </li>
             );
@@ -102,23 +112,8 @@ const StyledDay = styled.div`
   border-right: 1px solid #f0f0f0;
   border-bottom: 1px solid #f0f0f0;
 
-  .company-group {
-    position: relative;
-  }
-
   .company-group-postings {
-    z-index: 1;
-    position: absolute;
-    opacity: 0;
-    visibility: hidden;
-    background-color: #fff;
-    border: 1px solid #eee;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
-
-    &.show {
-      opacity: 1;
-      visibility: visible;
-    }
+    white-space: nowrap;
   }
 
   .day-head {

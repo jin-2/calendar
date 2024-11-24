@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode } from "react";
+import { forwardRef, ReactNode } from "react";
 import styled from "@emotion/styled";
 
 interface CompanyNameButtonProps {
@@ -9,14 +9,13 @@ interface CompanyNameButtonProps {
   onClick: () => void;
 }
 
-const CompanyNameButton = ({
-  recruitmentPeriodType,
-  className,
-  children,
-  onClick,
-}: CompanyNameButtonProps) => {
+const CompanyNameButton = forwardRef<
+  HTMLParagraphElement,
+  CompanyNameButtonProps
+>(({ recruitmentPeriodType, className, children, onClick }, ref) => {
   return (
     <StyledCompanyNameButton
+      ref={ref}
       role="button"
       onClick={onClick}
       className={className}
@@ -30,7 +29,7 @@ const CompanyNameButton = ({
       {children}
     </StyledCompanyNameButton>
   );
-};
+});
 
 export default CompanyNameButton;
 
