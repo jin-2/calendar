@@ -30,7 +30,7 @@ const DutyItem = ({ id, ...restProps }: DutyItemProps) => {
 
   return (
     <StyledDutyItem>
-      <p onClick={handleClick}>
+      <p onClick={handleClick} className="duty-item">
         <label>
           <input
             type="checkbox"
@@ -40,6 +40,7 @@ const DutyItem = ({ id, ...restProps }: DutyItemProps) => {
           />
         </label>
         {data.name}
+        <span className="arrow">{data.children.length ? "▶" : null}</span>
       </p>
       {data.children.length ? (
         <ul className={`filter-group ${isExpanded ? "show" : ""}`}>
@@ -55,6 +56,17 @@ const DutyItem = ({ id, ...restProps }: DutyItemProps) => {
 export default DutyItem;
 
 const StyledDutyItem = styled.li`
+  font-size: 16px;
+
+  .duty-item {
+    display: inline-block;
+    padding: 4px 10px;
+
+    > label {
+      margin-right: 4px;
+    }
+  }
+
   .filter-group {
     opacity: 0;
     visibility: hidden;
@@ -62,11 +74,17 @@ const StyledDutyItem = styled.li`
     top: 0;
     left: 260px;
     width: 100%;
-    background: #fff;
   }
 
   .filter-group.show {
     opacity: 1;
     visibility: visible;
+  }
+
+  .arrow {
+    color: #999;
+    margin-left: 4px;
+    font-size: 10px;
+    vertical-align: middle;
   }
 `;

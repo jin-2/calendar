@@ -12,6 +12,7 @@ import {
 import DutyItem from "../DutyItem/DutyItem.tsx";
 import { DutyData, ExpandedNodeId } from "../../types/recruit.ts";
 import { useDutyStore } from "../../stores/useDutyStore.ts";
+import { useDropdown } from "../../hooks/useDropdown.ts";
 
 interface FilterDutiesProps {
   setFilters: (filters: number[]) => void;
@@ -27,6 +28,7 @@ const FilterDuties = ({ setFilters }: FilterDutiesProps) => {
 
   const [dutiesMapForView, setDutiesMapForView] = useState(new Map());
   const setDutiesMap = useDutyStore((state) => state.setDutiesMap);
+  const { isOpen, toggleDropdown, dropdownRef } = useDropdown();
 
   useEffect(() => {
     if (data) {
@@ -78,19 +80,28 @@ const FilterDuties = ({ setFilters }: FilterDutiesProps) => {
   };
 
   return (
-    <StyledFilterDuties>
-      <ul className="root-filter-group">
-        {rootDutyIds.map((id) => (
-          <DutyItem
-            key={id}
-            id={id}
-            expandedNodeId={expandedNodeId}
-            getDataById={getDataById}
-            onExpand={handleExpand}
-            onChangeCheckbox={handleChangeDutyCheckbox}
-          />
-        ))}
-      </ul>
+    <StyledFilterDuties ref={dropdownRef}>
+      <div className="filter-button-wrap">
+        <button type="button" onClick={toggleDropdown}>
+          직무 선택
+        </button>
+      </div>
+      {isOpen && (
+        <div className="filter-wrap">
+          <ul className="root-filter-group">
+            {rootDutyIds.map((id) => (
+              <DutyItem
+                key={id}
+                id={id}
+                expandedNodeId={expandedNodeId}
+                getDataById={getDataById}
+                onExpand={handleExpand}
+                onChangeCheckbox={handleChangeDutyCheckbox}
+              />
+            ))}
+          </ul>
+        </div>
+      )}
     </StyledFilterDuties>
   );
 };
@@ -98,5 +109,32 @@ const FilterDuties = ({ setFilters }: FilterDutiesProps) => {
 export default FilterDuties;
 
 const StyledFilterDuties = styled.div`
-  position: relative;
+  background-color: #fafafa;
+
+  .filter-button-wrap {
+    padding: 20px;
+
+    > button {
+      width: 100px;
+      height: 40px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
+    }
+  }
+
+  .filter-wrap {
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    padding: 40px;
+    border-top: 1px solid #ddd;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.16);
+    background-color: #fafafa;
+  }
+
+  .root-filter-group {
+    position: relative;
+  }
 `;
