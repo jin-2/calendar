@@ -8,10 +8,17 @@ interface DutyItemProps {
   getDataById: (id: number) => HierarchyDutyData | undefined;
   onExpand: (id: number) => void;
   onChangeCheckbox: (id: number, isSelected: boolean) => void;
+  calcSelectedCount: (ids: number[]) => number;
 }
 
 const DutyItem = ({ id, ...restProps }: DutyItemProps) => {
-  const { expandedNodeId, getDataById, onExpand, onChangeCheckbox } = restProps;
+  const {
+    expandedNodeId,
+    getDataById,
+    onExpand,
+    onChangeCheckbox,
+    calcSelectedCount,
+  } = restProps;
 
   const data = getDataById(id);
   if (!data) {
@@ -40,6 +47,7 @@ const DutyItem = ({ id, ...restProps }: DutyItemProps) => {
           />
         </label>
         {data.name}
+        {calcSelectedCount([id]) || ""}
         <span className="arrow">{data.children.length ? "▶" : null}</span>
       </p>
       {data.children.length ? (

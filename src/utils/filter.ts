@@ -62,6 +62,24 @@ export function updateSelectionToParent(
   }
 }
 
+export function getSelectedCount(
+  nodeMap: DutyMapData,
+  node: HierarchyDutyData
+): number {
+  if (!node) return 0;
+
+  return node.children.reduce((acc, childId) => {
+    const child = nodeMap.get(childId);
+    if (!child) return acc;
+
+    if (child.children.length) {
+      return acc + getSelectedCount(nodeMap, child);
+    }
+
+    return acc + (child.isSelected ? 1 : 0);
+  }, 0);
+}
+
 export function getSelectedDutyIds(nodeMap: DutyMapData) {
   const selectedDutyIds = [];
 

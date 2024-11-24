@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getFilters } from "../../api/calendar.ts";
 import {
   getHierarchyDuties,
+  getSelectedCount,
   getSelectedDutyIds,
   updateSelectionToParent,
   updateSelectionToTargetAndChild,
@@ -74,16 +75,21 @@ const FilterDuties = ({ setFilters }: FilterDutiesProps) => {
       const newMap = new Map(prev);
       updateSelectionToTargetAndChild(newMap, data, isSelected);
       updateSelectionToParent(newMap, data);
-
       return newMap;
     });
+  };
+
+  const calcSelectedCount = (ids: number[]) => {
+    return ids.reduce((acc, id) => {
+      return acc + getSelectedCount(dutiesMapForView, dutiesMapForView.get(id));
+    }, 0);
   };
 
   return (
     <StyledFilterDuties ref={dropdownRef}>
       <div className="filter-button-wrap">
         <button type="button" onClick={toggleDropdown}>
-          직무 선택
+          직무 선택 {calcSelectedCount(rootDutyIds) || ""}
         </button>
       </div>
       {isOpen && (
@@ -97,6 +103,7 @@ const FilterDuties = ({ setFilters }: FilterDutiesProps) => {
                 getDataById={getDataById}
                 onExpand={handleExpand}
                 onChangeCheckbox={handleChangeDutyCheckbox}
+                calcSelectedCount={calcSelectedCount}
               />
             ))}
           </ul>
