@@ -32,45 +32,49 @@ const Day = ({ day, data, showDetail }: DayProps) => {
   return (
     <StyledDay>
       <time dateTime={day}>{day}</time>
-      {viewData &&
-        viewData.map((group) => {
-          const [first, second] = group;
-          return (
-            <li
-              key={first.company_name + "_" + first.type}
-              className="company-group"
-            >
-              <button
-                type="button"
-                onClick={() => handleClickCompany(!!second, first.id)}
-                className={
-                  !second && readList.includes(first.id) ? "visited" : ""
-                }
+      <ul>
+        {viewData &&
+          viewData.map((group) => {
+            const [first, second] = group;
+            return (
+              <li
+                key={first.company_name + "_" + first.type}
+                className="company-group"
               >
-                <strong>[{first.type === "start" ? "시" : "끝"}]</strong>
-                {first.company_name}
-              </button>
-              {second ? (
-                <ul
-                  className={`company-group-postings ${isShowGroup ? "show" : ""}`}
+                <button
+                  type="button"
+                  onClick={() => handleClickCompany(!!second, first.id)}
+                  className={
+                    !second && readList.includes(first.id) ? "visited" : ""
+                  }
                 >
-                  {group.map((item) => (
-                    <li key={item.id}>
-                      <button
-                        type="button"
-                        onClick={() => handleClickCompany(false, item.id)}
-                        className={readList.includes(item.id) ? "visited" : ""}
-                      >
-                        <strong>{item.type === "start" ? "시" : "끝"}</strong>)
-                        {item.title}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </li>
-          );
-        })}
+                  <strong>[{first.type === "start" ? "시" : "끝"}]</strong>
+                  {first.company_name}
+                </button>
+                {second ? (
+                  <ul
+                    className={`company-group-postings ${isShowGroup ? "show" : ""}`}
+                  >
+                    {group.map((item) => (
+                      <li key={item.id}>
+                        <button
+                          type="button"
+                          onClick={() => handleClickCompany(false, item.id)}
+                          className={
+                            readList.includes(item.id) ? "visited" : ""
+                          }
+                        >
+                          <strong>{item.type === "start" ? "시" : "끝"}</strong>
+                          ){item.title}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </li>
+            );
+          })}
+      </ul>
     </StyledDay>
   );
 };
