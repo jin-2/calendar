@@ -70,15 +70,23 @@ const Calendar = ({ filters }: CalendarProps) => {
 
   return (
     <>
-      <div>
-        <button type="button" onClick={() => changeMonth("prev")}>
-          이전달
+      <StyledCalendarHeader>
+        <button
+          type="button"
+          aria-label="이전 달 이동하기"
+          onClick={() => changeMonth("prev")}
+        >
+          &lt;
         </button>
-        <h2>{formatDate(currentDate, "yyyy.MM")}</h2>
-        <button type="button" onClick={() => changeMonth("next")}>
-          다음달
+        <h2 className="year-month">{formatDate(currentDate, "yyyy.MM")}</h2>
+        <button
+          type="button"
+          aria-label="다음 달 이동하기"
+          onClick={() => changeMonth("next")}
+        >
+          &gt;
         </button>
-      </div>
+      </StyledCalendarHeader>
       <StyledCalendar>
         <StyledWeekdays>
           {WEEKDAYS.map((dayName) => (
@@ -110,6 +118,23 @@ const Calendar = ({ filters }: CalendarProps) => {
 };
 
 export default Calendar;
+
+const StyledCalendarHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+
+  .year-month {
+    color: #ff6813;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 20px;
+    color: #666;
+  }
+`;
 
 const StyledWeekdays = styled.div`
   display: grid;
