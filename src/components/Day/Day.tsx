@@ -17,13 +17,13 @@ const Day = ({ day, data, showDetail }: DayProps) => {
     const map = getViewDayData(data);
     return Array.from(map.values());
   }, [data]);
-  const [isShowGroup, setIsShowGroup] = useState(false);
+  const [showParentId, setShowParentId] = useState<null | number>(null);
   const readList = useReadListStore((state) => state.readList);
   const addReadList = useReadListStore((state) => state.addReadList);
 
   const handleClickCompany = (hasChild: boolean, id: number) => {
     if (hasChild) {
-      setIsShowGroup((prev) => !prev);
+      setShowParentId((prevId) => (prevId !== id ? id : null));
       return;
     }
     addReadList(id);
@@ -55,7 +55,7 @@ const Day = ({ day, data, showDetail }: DayProps) => {
                 </CompanyNameButton>
                 {second ? (
                   <ul
-                    className={`company-group-postings ${isShowGroup ? "show" : ""}`}
+                    className={`company-group-postings ${showParentId === first.id ? "show" : ""}`}
                   >
                     {group.map((item) => (
                       <StyledCompanyPosting key={item.id}>
