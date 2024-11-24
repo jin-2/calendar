@@ -5,10 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getRecruits } from "../../api/calendar.ts";
 import { getMonthByWeek } from "../../utils/getMonthByWeek.ts";
 import { getArrayToMap } from "../../utils/getArrayToMap.ts";
-import { getCalendarData } from "../../utils/calendar.ts";
+import { formatDate, getCalendarData } from "../../utils/calendar.ts";
 import Day from "../Day/Day.tsx";
 import Modal from "../Modal/Modal.tsx";
 import JobDetail from "../JobDetail/JobDetail.tsx";
+import { addMonths } from "date-fns/addMonths";
 
 interface CalendarProps {
   filters: number[];
@@ -20,7 +21,9 @@ const Calendar = ({ filters }: CalendarProps) => {
     queryFn: getRecruits,
   });
 
-  const days = getMonthByWeek(2024, 11);
+  const now = new Date();
+  const [days, setDays] = useState(getMonthByWeek(now));
+  const [currentDate, setCurrentDate] = useState(now);
   const [currentDetailId, setCurrentDetailId] = useState<null | number>(null);
 
   const recruitDataToMap = useMemo(() => {
@@ -55,8 +58,25 @@ const Calendar = ({ filters }: CalendarProps) => {
     setCurrentDetailId(null);
   };
 
+  const changeMonth = (to: "prev" | "next") => {
+    const direction = to === "prev" ? -1 : 1;
+    const date = addMonths(currentDate, direction);
+    setCurrentDate(date);
+    setDays(getMonthByWeek(date));
+    return;
+  };
+
   return (
     <>
+      <div>
+        <button type="button" onClick={() => changeMonth("prev")}>
+          이전달
+        </button>
+        <h2>{formatDate(currentDate, "yyyy.MM")}</h2>
+        <button type="button" onClick={() => changeMonth("next")}>
+          다음달
+        </button>
+      </div>
       <StyledCalendar>
         {days.map((day) => (
           <Day
