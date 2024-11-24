@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import styled from "@emotion/styled";
 
@@ -10,13 +10,6 @@ type ModalProps = {
 };
 
 const Modal = ({ isOpen, onClose, children }: ModalProps) => {
-  useEffect(() => {
-    document.body.style.overflowY = "hidden";
-    return () => {
-      document.body.style.overflowY = "auto";
-    };
-  }, []);
-
   if (!isOpen) {
     return null;
   }
@@ -27,8 +20,13 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
         <StyledDim>
           <StyledModalContainer>
             <StyledModalContent>
-              <button type="button" onClick={onClose}>
-                닫기
+              <button
+                type="button"
+                aria-label="팝업 닫기"
+                className="close-button"
+                onClick={onClose}
+              >
+                X
               </button>
               {children}
             </StyledModalContent>
@@ -57,6 +55,15 @@ const StyledModalContent = styled.div`
   background: #fff;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   border-radius: 6px;
+
+  .close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px 15px;
+    font-size: 20px;
+    color: #888;
+  }
 `;
 
 const StyledDim = styled.div`
