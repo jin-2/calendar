@@ -10,7 +10,8 @@ import {
   updateSelectionToTargetAndChild,
 } from "../../utils/filter.ts";
 import DutyItem from "../DutyItem/DutyItem.tsx";
-import type { DutyData, ExpandedNodeId } from "../../types/recruit.ts";
+import { DutyData, ExpandedNodeId } from "../../types/recruit.ts";
+import { useDutyStore } from "../../stores/useDutyStore.ts";
 
 interface FilterDutiesProps {
   setFilters: (filters: number[]) => void;
@@ -24,18 +25,20 @@ const FilterDuties = ({ setFilters }: FilterDutiesProps) => {
 
   const { rootDutyIds } = getHierarchyDuties(data ?? []);
 
-  const [mapData, setMapData] = useState(new Map());
+  const [dutiesMapForView, setDutiesMapForView] = useState(new Map());
+  const setDutiesMap = useDutyStore((state) => state.setDutiesMap);
 
   useEffect(() => {
     if (data) {
       const { dutyMap } = getHierarchyDuties(data);
-      setMapData(dutyMap);
+      setDutiesMapForView(dutyMap);
+      setDutiesMap(dutyMap);
     }
   }, [data]);
 
   useEffect(() => {
-    setFilters(getSelectedDutyIds(mapData));
-  }, [mapData]);
+    setFilters(getSelectedDutyIds(dutiesMapForView));
+  }, [dutiesMapForView]);
 
   const [expandedNodeId, setExpandedNodeId] = useState<ExpandedNodeId>([
     null,
@@ -43,12 +46,12 @@ const FilterDuties = ({ setFilters }: FilterDutiesProps) => {
   ]);
 
   const getDataById = useCallback(
-    (id: DutyData["id"]) => mapData.get(id),
-    [mapData]
+    (id: DutyData["id"]) => dutiesMapForView.get(id),
+    [dutiesMapForView]
   );
 
   const handleExpand = (id: number) => {
-    const data = mapData.get(id);
+    const data = dutiesMapForView.get(id);
     if (!data) return;
 
     if (data.children.length === 0) return;
@@ -62,10 +65,10 @@ const FilterDuties = ({ setFilters }: FilterDutiesProps) => {
   };
 
   const handleChangeDutyCheckbox = (id: number, isSelected: boolean) => {
-    const data = mapData.get(id);
+    const data = dutiesMapForView.get(id);
     if (!data) return;
 
-    setMapData((prev) => {
+    setDutiesMapForView((prev) => {
       const newMap = new Map(prev);
       updateSelectionToTargetAndChild(newMap, data, isSelected);
       updateSelectionToParent(newMap, data);

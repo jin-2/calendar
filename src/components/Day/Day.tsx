@@ -8,9 +8,10 @@ import { useReadListStore } from "../../stores/useReadListStore.ts";
 interface DayProps {
   day: string; // yyyy-MM-dd
   data: CalendarItemData[];
+  showDetail: (id: number) => void;
 }
 
-const Day = ({ day, data }: DayProps) => {
+const Day = ({ day, data, showDetail }: DayProps) => {
   const viewData = useMemo(() => {
     const map = getViewDayData(data);
     return Array.from(map.values());
@@ -22,9 +23,10 @@ const Day = ({ day, data }: DayProps) => {
   const handleClickCompany = (hasChild: boolean, id: number) => {
     if (hasChild) {
       setIsShowGroup((prev) => !prev);
+      return;
     }
     addReadList(id);
-    console.log("goto 상세");
+    showDetail(id);
   };
 
   return (

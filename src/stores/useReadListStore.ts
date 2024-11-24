@@ -8,7 +8,10 @@ type ReadListState = {
 export const useReadListStore = create<ReadListState>()((set) => ({
   readList: [],
   addReadList: (id) =>
-    set((state) => ({
-      readList: [...state.readList, id],
-    })),
+    set((state) => {
+      if (!state.readList.includes(id)) {
+        return { readList: [...state.readList, id] };
+      }
+      return state;
+    }),
 }));

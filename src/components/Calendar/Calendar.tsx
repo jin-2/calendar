@@ -1,13 +1,14 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { getRecruits } from "../../api/calendar.ts";
-import { RecruitData } from "../../types/recruit.ts";
 import { getMonthByWeek } from "../../utils/getMonthByWeek.ts";
 import { getArrayToMap } from "../../utils/getArrayToMap.ts";
 import { getCalendarData } from "../../utils/calendar.ts";
 import Day from "../Day/Day.tsx";
+import Modal from "../Modal/Modal.tsx";
+import JobDetail from "../JobDetail/JobDetail.tsx";
 
 interface CalendarProps {
   filters: number[];
@@ -20,9 +21,10 @@ const Calendar = ({ filters }: CalendarProps) => {
   });
 
   const days = getMonthByWeek(2024, 11);
+  const [currentDetailId, setCurrentDetailId] = useState<null | number>(null);
 
   const recruitDataToMap = useMemo(() => {
-    return getArrayToMap<RecruitData>(data ?? [], "id");
+    return getArrayToMap(data ?? [], "id");
   }, [data]);
 
   const recruitDataByCalendar = useMemo(() => {
@@ -40,12 +42,39 @@ const Calendar = ({ filters }: CalendarProps) => {
     });
   };
 
+  const orderedListForDetail = () => {
+    const list = days.map((day) => filteredDutiesRecruitData(day));
+    return list.flat().map(({ id }) => id);
+  };
+
+  const showDetail = (id: number) => {
+    setCurrentDetailId(id);
+  };
+
+  const closeModal = () => {
+    setCurrentDetailId(null);
+  };
+
   return (
-    <StyledCalendar>
-      {days.map((day) => (
-        <Day key={day} day={day} data={filteredDutiesRecruitData(day) ?? []} />
-      ))}
-    </StyledCalendar>
+    <>
+      <StyledCalendar>
+        {days.map((day) => (
+          <Day
+            key={day}
+            day={day}
+            data={filteredDutiesRecruitData(day) ?? []}
+            showDetail={showDetail}
+          />
+        ))}
+      </StyledCalendar>
+      <Modal isOpen={currentDetailId !== null} onClose={closeModal}>
+        <JobDetail
+          recruitMapData={recruitDataToMap}
+          orderedRecruitIdList={orderedListForDetail()}
+          selectedId={currentDetailId!}
+        />
+      </Modal>
+    </>
   );
 };
 

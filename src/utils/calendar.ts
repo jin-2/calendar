@@ -9,8 +9,8 @@ export function getCalendarData(recruitData: RecruitData[]): CalendarMapData {
   const map = new Map();
   recruitData.forEach(
     ({ start_time, end_time, id, company_name, title, duty_ids }) => {
-      const startDate = getDateFromStringTime(new Date(start_time));
-      const endDate = getDateFromStringTime(new Date(end_time));
+      const startDate = formatDate(new Date(start_time));
+      const endDate = formatDate(new Date(end_time));
       const baseItem = {
         id,
         company_name,
@@ -50,11 +50,8 @@ function sortedCalendarData(map: CalendarMapData): CalendarMapData {
   return new Map(sortedEntries);
 }
 
-/*
- * @return "2024-05-31"
- * */
-export function getDateFromStringTime(date: Date) {
-  return format(date, "yyyy-MM-dd");
+export function formatDate(date: Date, pattern: string = "yyyy-MM-dd"): string {
+  return format(date, pattern);
 }
 
 export function getViewDayData(

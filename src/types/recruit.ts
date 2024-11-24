@@ -8,7 +8,7 @@ export type RecruitData = {
   duty_ids: number[]; // [58, 112, 115];
 };
 
-export type RecruitMapData = Map<string, RecruitData>;
+export type RecruitMapData = Map<RecruitData["id"], RecruitData>;
 
 export type CalendarItemData = Pick<
   RecruitData,
